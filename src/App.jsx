@@ -28,7 +28,7 @@ function App() {
     loadContext,
     clearDrawing,
     removeDrawing,
-  } = useDrawingContext(videoRef, canvasRef, framerate);
+  } = useDrawingContext(videoRef, canvasRef);
 
   const handleKeyDown = useVideoControls(videoRef, framerate, saveContext);
 

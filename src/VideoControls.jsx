@@ -7,6 +7,7 @@ const VideoControls = ({ videoRef }) => {
 
   useEffect(() => {
     const video = videoRef.current;
+    const progressElement = progressRef.current;
 
     const handlePlayPause = () => {
       setIsPlaying(!video.paused);
@@ -18,9 +19,9 @@ const VideoControls = ({ videoRef }) => {
     };
 
     const handleClick = (e) => {
-      const rect = progressRef.current.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickPercent = clickX / rect.width;
+      const progressBarRect = progressElement.getBoundingClientRect();
+      const clickX = e.clientX - progressBarRect.left;
+      const clickPercent = clickX / progressBarRect.width;
       video.currentTime = clickPercent * video.duration;
     };
 
@@ -28,13 +29,13 @@ const VideoControls = ({ videoRef }) => {
     video.addEventListener('pause', handlePlayPause);
     video.addEventListener('timeupdate', handleTimeUpdate);
 
-    progressRef.current.addEventListener('click', handleClick);
+    progressElement.addEventListener('click', handleClick);
 
     return () => {
       video.removeEventListener('play', handlePlayPause);
       video.removeEventListener('pause', handlePlayPause);
       video.removeEventListener('timeupdate', handleTimeUpdate);
-      progressRef.current.removeEventListener('click', handleClick);
+      progressElement.removeEventListener('click', handleClick);
     };
   }, [videoRef]);
 
@@ -48,14 +49,14 @@ const VideoControls = ({ videoRef }) => {
   };
 
   return (
-      <div className="flex flex-col items-center mt-2 w-full">
-        <div ref={progressRef} className="w-full bg-gray-300 h-2 mt-2 cursor-pointer relative">
-          <div className="bg-cyan-800 h-full" style={{width: `${progress}%`}}></div>
-        </div>
-        <button onClick={togglePlayPause} className="mt-5 bg-[#1A202C] hover:bg-[#283544] font-bold text-cyan-700 px-4 border-cyan-800 border-2 py-1 rounded-full">
-          {isPlaying ? 'Pause' : 'Play'}
-        </button>
+    <div className="flex flex-col items-center mt-2 w-full">
+      <div ref={progressRef} className="w-full bg-gray-300 h-2 mt-2 cursor-pointer relative">
+        <div className="bg-cyan-800 h-full" style={{ width: `${progress}%` }}></div>
       </div>
+      <button onClick={togglePlayPause} className="mt-5 bg-[#1A202C] hover:bg-[#283544] font-bold text-cyan-700 px-4 border-cyan-800 border-2 py-1 rounded-full">
+        {isPlaying ? 'Pause' : 'Play'}
+      </button>
+    </div>
   );
 };
 

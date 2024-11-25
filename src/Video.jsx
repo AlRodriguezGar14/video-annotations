@@ -6,7 +6,7 @@ const Video = ({ videoRef, videoFile }) => {
       videoRef.current.src = videoFile;
       videoRef.current.load();
     }
-  }, [videoFile]);
+  }, [videoFile, videoRef]);
 
   return (
     <div className="w-full">

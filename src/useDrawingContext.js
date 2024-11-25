@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const useDrawingContext = (videoRef, canvasRef, framerate) => {
+const useDrawingContext = (videoRef, canvasRef) => {
   const [savedContexts, setSavedContexts] = useState([]);
   const [currentDrawingIndex, setCurrentDrawingIndex] = useState(null);
   const [comment, setComment] = useState('');

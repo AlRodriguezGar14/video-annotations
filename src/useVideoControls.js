@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
+import {useCallback} from 'react';
 
 const useVideoControls = (videoRef, framerate, saveContext) => {
-  const handleKeyDown = useCallback((event) => {
+  return useCallback((event) => {
     switch (event.key) {
       case ' ':
       case 'k':
@@ -32,8 +32,6 @@ const useVideoControls = (videoRef, framerate, saveContext) => {
         break;
     }
   }, [videoRef, framerate, saveContext]);
-
-  return handleKeyDown;
 };
 
 export default useVideoControls;
