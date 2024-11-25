@@ -1,86 +1,71 @@
-import {useRef, useState} from 'react';
-import useWindow from "./useWindow.js";
+import { useRef, useContext, useState } from 'react';
+import Video from './Video.jsx';
+import VideoControls from './VideoControls.jsx';
+import Canvas from './Canvas.jsx';
+import SaveDrawingButton from './SaveDrawingButton';
+import LoadDrawingButtons from './LoadDrawingButtons';
+import ClearDrawingButton from './ClearDrawingButton';
+import GoToTimecode from "./GoToTimecode.jsx";
+import VideoControlPanel from './VideoControlPanel.jsx';
+import VideoSelector from './VideoSelector.jsx';
+import useDrawingContext from './useDrawingContext';
+import useVideoControls from './useVideoControls';
+import { VideoContext } from './VideoContext.jsx';
 import './App.css';
 
 function App() {
-    const {dimensions} = useWindow();
-    const canvas = useRef(null);
-    const [isDrawing, setIsDrawing] = useState(false);
-    const [currentDrawing, setCurrentDrawing] = useState([]);
-    const [savedContexts, setSavedContexts] = useState([]);
+  const { videoFile } = useContext(VideoContext);
+  const [framerate, setFramerate] = useState(23.976);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
-    // Start drawing by initializing the current drawing points
-    const startDrawing = ({nativeEvent}) => {
-        if (isDrawing) return;
-        const {offsetX, offsetY} = nativeEvent;
-        setCurrentDrawing([{offsetX, offsetY}]);
-        setIsDrawing(true);
-    };
+  const {
+    savedContexts,
+    comment,
+    currentComment,
+    setComment,
+    saveContext,
+    loadContext,
+    clearDrawing,
+    removeDrawing,
+  } = useDrawingContext(videoRef, canvasRef, framerate);
 
-    const stopDrawing = () => {
-        if (!isDrawing) return;
-        setIsDrawing(false);
-        setCurrentDrawing([]);
-    };
+  const handleKeyDown = useVideoControls(videoRef, framerate, saveContext);
 
-    // Draw on the canvas and update the current drawing points
-    const draw = ({nativeEvent}) => {
-        if (!isDrawing) return;
-        const {offsetX, offsetY} = nativeEvent;
-        const newPoint = {offsetX, offsetY};
-        setCurrentDrawing(prevPoints => [...prevPoints, newPoint]);
-        drawSegment(currentDrawing[currentDrawing.length - 1], newPoint);
-    };
-
-    const drawSegment = (start, end) => {
-        if (!start || !end) return;
-        const context = canvas.current.getContext("2d");
-        context.beginPath();
-        context.moveTo(start.offsetX, start.offsetY);
-        context.lineTo(end.offsetX, end.offsetY);
-        context.strokeStyle = `rgb(150, 96, 116)`;
-        context.lineWidth = 5;
-        context.lineCap = "round";
-        context.lineJoin = "round";
-        context.stroke();
-    };
-
-    // Save the current canvas context and clear the screen
-    const saveContext = () => {
-        const context = canvas.current.getContext("2d");
-        const imageData = context.getImageData(0, 0, canvas.current.width, canvas.current.height);
-        setSavedContexts(prevContexts => [...prevContexts, imageData]);
-        context.clearRect(0, 0, canvas.current.width, canvas.current.height);
-    };
-
-    // Load a saved context onto the canvas
-    const loadContext = (index) => {
-        const context = canvas.current.getContext("2d");
-        context.putImageData(savedContexts[index], 0, 0);
-    };
-
-    return (
+  return (
+    <>
+      {videoFile && (
         <>
-            <div className="p-6">
-                <div>
-                    {savedContexts.map((_, index) => (
-                        <button className="p-2 m-2 bg-gray-800 hover:bg-gray-900 text-white rounded-3xl" key={index} onClick={() => loadContext(index)}>
-                            Load Drawing {index + 1}
-                        </button>
-                    ))}
-                <button className="bg-violet-600 hover:bg-violet-700 text-white font-medium px-3 py-3 m-2 rounded shadow-2xl block border-b-4 border-r-4 border-violet-950" onClick={saveContext}>Save Drawing</button>
-                </div>
-                <canvas
-                    onMouseMove={draw}
-                    onMouseDown={startDrawing}
-                    onMouseUp={stopDrawing}
-                    ref={canvas}
-                    width={dimensions.width}
-                    height={dimensions.height}
-                ></canvas>
+          <VideoControlPanel handleKeyDown={handleKeyDown} />
+          <div className="flex flex-col mt-10 md:flex-row h-lvh" tabIndex="0" onKeyDown={handleKeyDown} style={{ outline: 'none' }}>
+            <div className="flex flex-col pt-2 ml-2 md:ml-5 space-y-2 md:space-y-4 overflow-y-auto max-h-[70vh] w-full md:w-48 rounded shadow-sm" style={{ outline: 'none' }}>
+              <GoToTimecode videoRef={videoRef} framerate={framerate} setFramerate={setFramerate} />
+              <ClearDrawingButton clearDrawing={clearDrawing}/>
+              <input
+                type="text"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Enter comment"
+                className="p-1 border rounded text-sm bg-gray-700 text-white"
+                onKeyDown={(e) => e.stopPropagation()}
+              />
+              <SaveDrawingButton saveContext={saveContext}/>
+              <LoadDrawingButtons savedContexts={savedContexts} loadContext={loadContext} removeDrawing={removeDrawing}/>
             </div>
+            <div className="p-2 relative flex-grow md:-ml-4" style={{outline: 'none'}}>
+              <div className="video-container mx-auto max-w-4xl relative">
+                <Video videoRef={videoRef} videoFile={videoFile}/>
+                <Canvas videoRef={videoRef} canvasRef={canvasRef}/>
+                <VideoControls videoRef={videoRef}/>
+                <h4 className="text-white font-medium">{currentComment}</h4>
+              </div>
+            </div>
+          </div>
         </>
-    );
+      )}
+      <VideoSelector />
+    </>
+  );
 }
 
 export default App;
