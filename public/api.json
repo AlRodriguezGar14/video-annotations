@@ -1,12 +1,12 @@
 {
   "db": [
     {
-      "videoPath": "",
-      "videoTitle": ""
+      "videoPath": "https://alrodriguezgar.com/compressed_soba.mp4",
+      "videoTitle": "Spirit of Soba"
     },
     {
-      "videoPath": "../src/assets/7c92-844f_sons_of_karabakh.mp4",
-      "videoTitle": "Sons of Karabakh"
+      "videoPath": "https://alrodriguezgar.com/florencio_raw.mp4",
+      "videoTitle": "Florencio (No Grade)"
     }
   ],
 "name": "movies-db"}
