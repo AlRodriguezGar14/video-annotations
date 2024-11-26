@@ -1,4 +1,5 @@
 {
+  "name": "movies-db",
   "db": [
     {
       "videoPath": "https://alrodriguezgar.com/compressed_soba.mp4",
@@ -8,5 +9,5 @@
       "videoPath": "https://alrodriguezgar.com/florencio_raw.mp4",
       "videoTitle": "Florencio (No Grade)"
     }
-  ],
-"name": "movies-db"}
+  ]
+}

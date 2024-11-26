@@ -8,10 +8,10 @@ import ClearDrawingButton from './ClearDrawingButton';
 import GoToTimecode from "./GoToTimecode.jsx";
 import VideoControlPanel from './VideoControlPanel.jsx';
 import VideoSelector from './VideoSelector.jsx';
-import useDrawingContext from './useDrawingContext';
-import useVideoControls from './useVideoControls';
+import useDrawingContext from '../hooks/useDrawingContext';
+import useVideoControls from '../hooks/useVideoControls';
 import { VideoContext } from './VideoContext.jsx';
-import './App.css';
+import '../styles/App.css';
 
 function App() {
   const { videoFile } = useContext(VideoContext);

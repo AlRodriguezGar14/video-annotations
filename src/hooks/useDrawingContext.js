@@ -48,6 +48,7 @@ const useDrawingContext = (videoRef, canvasRef) => {
     const currentTime = videoRef.current.currentTime;
     const savedContext = savedContexts[currentDrawingIndex];
 
+    // 0,67 is a random value that matches with the User Experience I want to achieve. TODO: Improve this logic
     if (savedContext && (currentTime < savedContext.currentTime - 0.67 || currentTime > savedContext.currentTime + 0.67)) {
       context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       setCurrentDrawingIndex(null);

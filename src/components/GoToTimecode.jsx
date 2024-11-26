@@ -3,6 +3,7 @@ import { useState } from 'react';
 const GoToTimecode = ({ videoRef, framerate, setFramerate }) => {
   const [timecode, setTimecode] = useState('');
 
+  // TODO: Retrieve the framerate from the video so that the user doesn't need to manually select
   const framerates = [23.976, 24, 25, 29.97, 30, 50, 59.94, 60];
 
   const timecodeToFrame = (timecode, fps) => {
